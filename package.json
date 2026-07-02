@@ -1,0 +1,31 @@
+{
+  "name": "us-county-merge",
+  "version": "0.0.0",
+  "license": "ISC",
+  "description": "Provides an interface that uses US census county data to combine individual US counties into custom regions.",
+  "author": "Philip Oriuwa",
+  "private": true,
+  "type": "module",
+  "keywords": [
+    "census-data",
+    "us-counties",
+    "geospatial",
+    "custom-regions",
+    "data-visualization",
+    "population-aggregation",
+    "geographic-data",
+    "mapping",
+    "d3",
+    "region-builder",
+    "geojson"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.2",
+    "vite": "^8.1.1"
+  },
+}
