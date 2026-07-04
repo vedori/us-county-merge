@@ -13,11 +13,10 @@
     "custom-regions",
     "data-visualization",
     "population-aggregation",
+    "gdp-aggregation",
     "geographic-data",
     "mapping",
-    "d3",
-    "region-builder",
-    "geojson"
+    "region-builder"
   ],
   "scripts": {
     "dev": "vite",
@@ -25,7 +24,8 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "mapshaper": "^0.7.37",
     "typescript": "~6.0.2",
     "vite": "^8.1.1"
-  },
+  }
 }
