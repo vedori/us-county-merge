@@ -21,6 +21,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build-map": "node ./scripts/generate-svg.mjs",
     "preview": "vite preview"
   },
   "devDependencies": {
