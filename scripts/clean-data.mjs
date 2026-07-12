@@ -13,10 +13,10 @@ const clean = (svg_data) => {
 
   // Rewrites the top level svg attributes
   const fillColor = '#bcc';
-  const strokeColor = '#000';
+  const strokeColor = '#fff';
   const strokeWidth = 1;
-  const svgHeader = '<svg xmlns="http://www.w3.org/2000/svg" version="1.2"'
-    + ' baseProfile="tiny" width="4644" height="2901"'
+  const svgHeader = '<svg id="us-map" xmlns="http://www.w3.org/2000/svg" version="1.2"'
+    + ' baseProfile="tiny"'
     + ' viewBox="0 0 4644 2901"'
     + ` stroke="${strokeColor}" stroke-width="${strokeWidth}"`
     + ' stroke-linecap="round" stroke-linejoin="round"'
