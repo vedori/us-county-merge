@@ -21,11 +21,14 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build-data": "node ./scripts/build-county-data.mjs",
     "build-map": "node ./scripts/generate-svg.mjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview-map": "node --watch ./scripts/generate-svg.mjs"
   },
   "devDependencies": {
-    "mapshaper": "^0.7.37",
+    "dotenv": "^17.4.2",
+    "mapshaper": "^0.6.113",
     "typescript": "~6.0.2",
     "vite": "^8.1.1"
   }
