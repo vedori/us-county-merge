@@ -18,7 +18,6 @@ const SVG_SMOOTHING_COEF = 0.0; // Higher values produce smoother output, defaul
 const SVG_OUTPUT_FILE = 'data/svg/map.svg';
 
 const KML_INPUT = './data/kml/cb_2020_us_county_500k.kml';
-const ALBERS_KML = 'albers.kml';
 const HELPER_FILE = './scripts/enrich-kml-fields.mjs';
 
 // Maps initial KML field names to standard application identifiers
@@ -62,15 +61,13 @@ filterFields = ' -filter-fields ' + `${filterFields} `;
 
 // Uses the Albers USA projection which is a composite projection
 // that shows both Alaska (as smaller) and Hawaii close to the continuous US
+// Also adds other commands that shape the KML into having the fields required by the program
 // INPUT: the full path of the initial KML file
-// OUTPUT: the full path of the modified KML file which has renamed/added fields
-const projectionCmd = `${KML_INPUT} -proj albersusa`
+const kmlCmd = `${KML_INPUT} -proj albersusa`
   + renameFields
   + addNewFields
   + filterFields
-  + simplifyPolygons
-  + '-o '
-  + `${ALBERS_KML} `;
+  + simplifyPolygons;
 
 // console.log('renameFields:', renameFields);
 // console.log('addNewFields:', addNewFields);
@@ -78,16 +75,8 @@ const projectionCmd = `${KML_INPUT} -proj albersusa`
 // console.log('simplifyPolygons:', simplifyPolygons);
 
 
-// Instead of writing to a file it holds the reprojected KML in memory 
-// with the form { ALBERS_KML : DATA }
-// The value of ALBERS_KML is the identifier for the reprojected KML
-console.log('Reprojecting KML file');
-const albersProjection = await mapshaper.applyCommands(projectionCmd);
 
 // Configures SVG settings and exports the KML to SVG.
-// Expects input in the form of
-// { ALBERS_KML : DATA } (or a full path to the KML if it is a file)
-// The value of ALBERS_KML is the identifier for the reprojected KML
 // Each KML placemark is exported as an SVG path element
 // Config:
 //    Sets the path id to use the GEOID which is a concat of the state FIPS + county FIPS
@@ -95,17 +84,17 @@ const albersProjection = await mapshaper.applyCommands(projectionCmd);
 //      for example POP -> data-pop
 //    Sets the SVG scale
 // NOTE: Ensure that IDE formatting does not alter spacing for command strings `- seems to be an issue
-const svgCmd = '-i ' + `${ALBERS_KML}` + " -o"
+const svgCmd = kmlCmd
+  + ' -o'
   + ' id-field="GEOID"'
   + ' svg-data=POP,GDP,' + `"${NEW_FIELD_MAPPING.NAMELSAD}","${NEW_FIELD_MAPPING.STUSPS}"`
   + ' svg-scale=' + `${SVG_SCALE}`
   + ` ${SVG_OUTPUT_FILE} `;
 
-// Input accepts { ALBERS_KML : DATA } (or full path if file)
 // Runs the SVG command on that input to get an SVG
 // The output would be in the form of { SVG_OUTPUT_FILE : DATA }
-console.log('Converting reprojected KML to SVG');
-const svgOutput = await mapshaper.applyCommands(svgCmd, albersProjection);
+console.log('Converting KML to SVG');
+const svgOutput = await mapshaper.applyCommands(svgCmd);
 
 // Fixes formatting issues in the generated SVG XML
 const cleanSVGOutput = clean(svgOutput[SVG_OUTPUT_FILE]);
