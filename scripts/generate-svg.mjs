@@ -17,7 +17,8 @@ const SVG_SCALE = 1000;
 const SVG_SMOOTHING_COEF = 0.0; // Higher values produce smoother output, default is 0.7
 const SVG_OUTPUT_FILE = 'data/svg/map.svg';
 
-const KML_INPUT = './data/kml/cb_2020_us_county_500k.kml';
+const COUNTY_KML = './data/kml/cb_2020_us_county_500k.kml';
+const HIGHWAY_GEOJSON = './data/geojson/highways.geojson';
 const HELPER_FILE = './scripts/enrich-kml-fields.mjs';
 
 // Maps initial KML field names to standard application identifiers
@@ -27,54 +28,74 @@ const NEW_FIELD_MAPPING = {
   'STUSPS': 'STATE'
 };
 
-// Renaming uses the format NEW=OLD
-const renameFields = ' -rename-fields SNAME=NAME,'
-  + `${NEW_FIELD_MAPPING.NAMELSAD}=NAMELSAD`
-  + `,${NEW_FIELD_MAPPING.STUSPS}=STUSPS`;
+// Builds the command for taking in and transforming the county kml
+const buildCountyCommand = () => {
+  // Renaming uses the format NEW=OLD
+  const renameFields = ' -rename-fields SNAME=NAME,'
+    + `${NEW_FIELD_MAPPING.NAMELSAD}=NAMELSAD`
+    + `,${NEW_FIELD_MAPPING.STUSPS}=STUSPS`;
 
-// Add required KML data fields to each placemark
-// The -each command takes in a quoted string that has access to all data fields defined in the KML
-// JS can also run in the quoted string
-// Includes a helper file which exports functions that can be directly used by the -each command.
-// NOTE: Ensure that IDE formatting does not alter spacing for command strings `- seems to be an issue
-const addNewFields = ' -require ' + `${HELPER_FILE}`
-  + ' -each '
-  + '"'
-  + "POP=" + "getPop(GEOID), "
-  + "GDP=" + "getGDP(GEOID)"
-  + '"';
+  // Add required KML data fields to each placemark
+  // The -each command takes in a quoted string that has access to all data fields defined in the KML
+  // JS can also run in the quoted string
+  // Includes a helper file which exports functions that can be directly used by the -each command.
+  // NOTE: Ensure that IDE formatting does not alter spacing for command strings `- seems to be an issue
+  const addNewFields = ' -require ' + `${HELPER_FILE}`
+    + ' -each '
+    + '"'
+    + "POP=" + "getPop(GEOID), "
+    + "GDP=" + "getGDP(GEOID)"
+    + '"';
 
-// Simplifies the polygons to get a lower file size
-// Explicityly uses the default smoothing algorithm (visvalingam). See:
-// https://mapshaper.org/docs/reference.html#-simplify
-const simplifyPolygons = ' -simplify visvalingam keep-shapes '
-  + 'percentage=' + `${SVG_SIMPLIFICATION_PERCENTAGE} `
-  + 'weighting=' + `${SVG_SMOOTHING_COEF} `;
+  // Simplifies the polygons to get a lower file size
+  // Explicityly uses the default smoothing algorithm (visvalingam). See:
+  // https://mapshaper.org/docs/reference.html#-simplify
+  const simplifyPolygons = ' -simplify visvalingam keep-shapes '
+    + 'percentage=' + `${SVG_SIMPLIFICATION_PERCENTAGE} `
+    + 'weighting=' + `${SVG_SMOOTHING_COEF}`;
 
-// Filters the fields of the resulting KML
-// This saves time for subsequent transactions
-let filterFields = Object.values(NEW_FIELD_MAPPING);
-filterFields.push('GEOID');
-filterFields.push('POP');
-filterFields.push('GDP');
-filterFields = ' -filter-fields ' + `${filterFields} `;
+  // Filters the fields of the resulting KML
+  // This saves time for subsequent transactions
+  let filterFields = Object.values(NEW_FIELD_MAPPING);
+  filterFields.push('GEOID');
+  filterFields.push('POP');
+  filterFields.push('GDP');
+  filterFields = ' -filter-fields ' + `${filterFields} `;
 
-// Uses the Albers USA projection which is a composite projection
-// that shows both Alaska (as smaller) and Hawaii close to the continuous US
-// Also adds other commands that shape the KML into having the fields required by the program
-// INPUT: the full path of the initial KML file
-const kmlCmd = `${KML_INPUT} -proj albersusa`
-  + renameFields
-  + addNewFields
-  + filterFields
-  + simplifyPolygons;
+  // Uses the Albers USA projection which is a composite projection
+  // that shows both Alaska (as smaller) and Hawaii close to the continuous US
+  // Also adds other commands that shape the KML into having the fields required by the program
+  // INPUT: the full path of the initial KML file
+  const countyKmlCmd = `${COUNTY_KML} name="counties" -proj albersusa`
+    + renameFields
+    + addNewFields
+    + filterFields
+    + simplifyPolygons
+    + ' ';
 
-// console.log('renameFields:', renameFields);
-// console.log('addNewFields:', addNewFields);
-// console.log('filterFields:', filterFields);
-// console.log('simplifyPolygons:', simplifyPolygons);
+  // console.log('renameFields:', renameFields);
+  // console.log('addNewFields:', addNewFields);
+  // console.log('filterFields:', filterFields);
+  // console.log('simplifyPolygons:', simplifyPolygons);
 
+  return countyKmlCmd;
+};
 
+// Builds the command for taking in and transforming the highway geojson
+const buildHighwayCommand = () => {
+  const bufferRadius = '10km';
+  const color = '#000';
+
+  // INPUT: the full path of the initial KML file
+  const highwayKmlCmd = ' -i ' + `${HIGHWAY_GEOJSON}`
+    + ' name="highways" -target highways'
+    + ' -proj match="counties"'
+    + ' -style target highways'
+    + ` fill="${color}"`
+    + ' -buffer ' + `${bufferRadius}`
+    ;
+  return highwayKmlCmd;
+};
 
 // Configures SVG settings and exports the KML to SVG.
 // Each KML placemark is exported as an SVG path element
@@ -84,11 +105,12 @@ const kmlCmd = `${KML_INPUT} -proj albersusa`
 //      for example POP -> data-pop
 //    Sets the SVG scale
 // NOTE: Ensure that IDE formatting does not alter spacing for command strings `- seems to be an issue
-const svgCmd = kmlCmd
+const svgCmd = buildCountyCommand() + buildHighwayCommand()
+  + ' -merge-layers target=counties,highways force'
   + ' -o'
   + ' id-field="GEOID"'
   + ' svg-data=POP,GDP,' + `"${NEW_FIELD_MAPPING.NAMELSAD}","${NEW_FIELD_MAPPING.STUSPS}"`
-  + ' svg-scale=' + `${SVG_SCALE}`
+  // + ' svg-scale=' + `${SVG_SCALE}`
   + ` ${SVG_OUTPUT_FILE} `;
 
 // Runs the SVG command on that input to get an SVG
@@ -97,10 +119,10 @@ console.log('Converting KML to SVG');
 const svgOutput = await mapshaper.applyCommands(svgCmd);
 
 // Fixes formatting issues in the generated SVG XML
-const cleanSVGOutput = clean(svgOutput[SVG_OUTPUT_FILE]);
+const cleanSvgOutput = clean(svgOutput[SVG_OUTPUT_FILE]);
 
 // Writes the SVG data to a file
-fs.writeFile(SVG_OUTPUT_FILE, cleanSVGOutput, (err) => {
+fs.writeFile(SVG_OUTPUT_FILE, cleanSvgOutput, (err) => {
   if (err) {
     console.error('Error writing to SVG file:', err);
     return;
