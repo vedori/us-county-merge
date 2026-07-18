@@ -160,7 +160,7 @@ const build = async () => {
   await addPopulation();
   await addGDP();
 
-  const data = JSON.stringify(dataStore);
+  const data = JSON.stringify(dataStore, null, 2);
 
   fs.writeFile(DATA_FILE_PATH, data, (err) => {
     if (err) {
