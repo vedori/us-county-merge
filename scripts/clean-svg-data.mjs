@@ -15,7 +15,6 @@ const clean = (svg_data) => {
     const strokeWidth = 0.1;
     const styles = '<g id="counties"'
       + ` fill="${fillColor}"`
-      + ' fill-rule="evenodd"'
       + ` stroke="${strokeColor}"`
       + ` stroke-width="${strokeWidth}"`
       + '>';
@@ -35,6 +34,21 @@ const clean = (svg_data) => {
       + ` opacity="${opacity}"`
       + '>';
     data = data.replace(/<g id="highways"[^>]*>/, styles);
+  }
+
+  // Adds default style attributes to the top level state borders group
+  {
+    const fillColor = 'none';
+    const strokeColor = '#000';
+    const strokeWidth = 0.5;
+    const opacity = 1.0;
+    const styles = '<g id="borders"'
+      + ` fill="${fillColor}"`
+      + ` stroke="${strokeColor}"`
+      + ` stroke-width="${strokeWidth}"`
+      + ` opacity="${opacity}"`
+      + '>';
+    data = data.replace(/<g id="borders"[^>]*>/, styles);
   }
 
   return data;

@@ -21,6 +21,7 @@ const HELPER_FILE = './scripts/enrich-kml-fields.mjs';
 
 const COUNTY_DATA_LABEL = 'counties.kml';
 const HIGHWAY_DATA_LABEL = 'highways.kml';
+const STATE_BORDER_DATA_LABEL = 'borders.kml';
 
 // Maps initial KML field names to standard application identifiers
 // The field names from the KML file will eventually be exported to SVG as data attributes
@@ -104,7 +105,6 @@ const buildHighwayCommand = () => {
     + ' weighting=0' // Smoothness
     ;
 
-
   // INPUT: the full path of the initial highway geojson file
   // OUTPUT: An object in the form of { DATA_LABEL : DATA } 
   //        (or a file by the name of DATA_LABEL if ran with `mapshaper.runCommands()`)
@@ -120,6 +120,35 @@ const buildHighwayCommand = () => {
   return highwayKmlCmd;
 };
 
+// Builds the command for taking in the county KML file
+// and transforming it into a kml file projected in albers usa
+// *It uses the county kml file to define state borders
+const buildStateBordersCommand = () => {
+  const applyProjection = ' -proj albersusa';
+  const mergePolygonsByState = ' -dissolve fields="STUSPS"';
+  const styleLines = ' -style clear';
+  const simplifyPolyline = ' -simplify visvalingam'
+    + ' percentage=10%' // Less removes more
+    + ' weighting=0' // Smoothness
+    // + ' -filter-islands min-area="10km2"'
+    ;
+
+  const defineBorder = ' -lines'
+
+  // INPUT: the full path of the initial highway geojson file
+  // OUTPUT: An object in the form of { DATA_LABEL : DATA } 
+  //        (or a file by the name of DATA_LABEL if ran with `mapshaper.runCommands()`)
+  const stateBorderKmlCmd = ' -i ' + `${COUNTY_KML}`
+    + ' name="borders" -target borders'
+    + applyProjection
+    + simplifyPolyline
+    + mergePolygonsByState
+    + defineBorder
+    + styleLines
+    + ' -o '
+    + `${STATE_BORDER_DATA_LABEL}`;
+  return stateBorderKmlCmd;
+};
 // console.log('[Debug]: You should only see this message if you uncommented this code');
 // console.log(`Writing to ./${COUNTY_DATA_LABEL} and ./${HIGHWAY_DATA_LABEL}`);
 // await mapshaper.runCommands(buildCountyCommand());
@@ -129,6 +158,8 @@ const buildHighwayCommand = () => {
 
 console.log('Projecting county data to Albers USA');
 const countyProjected = await mapshaper.applyCommands(buildCountyCommand());
+console.log('Projecting state border data to Albers USA');
+const stateBordersProjected = await mapshaper.applyCommands(buildStateBordersCommand());
 console.log('Projecting highway data to Albers USA');
 const highwayProjected = await mapshaper.applyCommands(buildHighwayCommand());
 
@@ -139,7 +170,6 @@ const highwayProjected = await mapshaper.applyCommands(buildHighwayCommand());
 //    Sets the path id to use the GEOID which is a concat of the state FIPS + county FIPS
 //    Sets all the data-attributes for the path with a CSV of KML field names
 //      for example POP -> data-pop
-//    Sets the SVG scale
 // INPUT: An object that contains the data of all the files to be combined
 //        in the form { FILE1_LABEL:FILE1_DATA, FILE2_LABEL:FILE2_DATA ... }
 //        (or a comma seperated string of all the filepaths if on disk)
@@ -147,14 +177,14 @@ const highwayProjected = await mapshaper.applyCommands(buildHighwayCommand());
 //        (or a file by the name of DATA_LABEL if ran with `mapshaper.runCommands()`)
 const svgCmd =
   ' -i combine-files '
-  + `${COUNTY_DATA_LABEL} ${HIGHWAY_DATA_LABEL}`
+  + `${COUNTY_DATA_LABEL} ${HIGHWAY_DATA_LABEL} ${STATE_BORDER_DATA_LABEL}`
   + ' -o'
   + ' id-field="GEOID","SIGN1"'
   + ' svg-data=POP,GDP,' + `"${NEW_FIELD_MAPPING.NAMELSAD}","${NEW_FIELD_MAPPING.STUSPS}"`
   + ` ${SVG_OUTPUT_FILE} `
   ;
 console.log('Exporting data to SVG');
-const svgOutput = await mapshaper.applyCommands(svgCmd, { ...countyProjected, ...highwayProjected });
+const svgOutput = await mapshaper.applyCommands(svgCmd, { ...countyProjected, ...highwayProjected, ...stateBordersProjected });
 
 // Fixes formatting issues in the generated SVG XML
 // and applies additional styling to certain elements
