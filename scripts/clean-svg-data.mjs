@@ -2,6 +2,13 @@
 const clean = (svg_data) => {
   let data = svg_data;
 
+  // Removes the svg version comment
+  data = data.replace('<?xml version="1.0"?>\n', '');
+
+  // Adds id to the svg
+  data = data.replace('<svg', '<svg id="map"');
+
+
   // Removes empty <g/> elements
   data = data.replaceAll(/\<g\/\>\r?\n/g, '');
 
