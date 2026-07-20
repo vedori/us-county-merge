@@ -14,6 +14,7 @@ import { clean } from './clean-svg-data.mjs';
 // despite being the same filesize
 const SVG_SIMPLIFICATION_PERCENTAGE = '5%';
 const SVG_OUTPUT_FILE = 'data/svg/map.svg';
+const SVG_SCALE = 10000; // Smaller values "zooms in" larger values "zooms out"
 
 const COUNTY_KML = './data/kml/cb_2020_us_county_500k.kml';
 const HIGHWAY_GEOJSON = './data/geojson/highways.geojson';
@@ -101,7 +102,7 @@ const buildHighwayCommand = () => {
   const mergePolylineByInterstate = ' -dissolve fields="SIGN1"';
   const styleLines = ' -style clear';
   const simplifyPolyline = ' -simplify visvalingam'
-    + ' percentage=0.1%' // Less removes more
+    + ' percentage=' + `${SVG_SIMPLIFICATION_PERCENTAGE}`
     + ' weighting=0' // Smoothness
     ;
 
@@ -128,12 +129,12 @@ const buildStateBordersCommand = () => {
   const mergePolygonsByState = ' -dissolve fields="STUSPS"';
   const styleLines = ' -style clear';
   const simplifyPolyline = ' -simplify visvalingam'
-    + ' percentage=10%' // Less removes more
+    + ' percentage=5%' // Less removes more
     + ' weighting=0' // Smoothness
     // + ' -filter-islands min-area="10km2"'
     ;
 
-  const defineBorder = ' -lines'
+  const defineBorder = ' -innerlines'
 
   // INPUT: the full path of the initial highway geojson file
   // OUTPUT: An object in the form of { DATA_LABEL : DATA } 
@@ -177,14 +178,16 @@ const highwayProjected = await mapshaper.applyCommands(buildHighwayCommand());
 //        (or a file by the name of DATA_LABEL if ran with `mapshaper.runCommands()`)
 const svgCmd =
   ' -i combine-files '
-  + `${COUNTY_DATA_LABEL} ${HIGHWAY_DATA_LABEL} ${STATE_BORDER_DATA_LABEL}`
+  // The order of the inputs here defines the order in the svg output
+  + `${COUNTY_DATA_LABEL} ${STATE_BORDER_DATA_LABEL} ${HIGHWAY_DATA_LABEL}`
   + ' -o'
   + ' id-field="GEOID","SIGN1"'
   + ' svg-data=POP,GDP,' + `"${NEW_FIELD_MAPPING.NAMELSAD}","${NEW_FIELD_MAPPING.STUSPS}"`
+  + ` svg-scale=${SVG_SCALE}`
   + ` ${SVG_OUTPUT_FILE} `
   ;
 console.log('Exporting data to SVG');
-const svgOutput = await mapshaper.applyCommands(svgCmd, { ...countyProjected, ...highwayProjected, ...stateBordersProjected });
+const svgOutput = await mapshaper.applyCommands(svgCmd, { ...countyProjected, ...stateBordersProjected, ...highwayProjected });
 
 // Fixes formatting issues in the generated SVG XML
 // and applies additional styling to certain elements
