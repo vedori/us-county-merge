@@ -29,8 +29,11 @@
   },
   "devDependencies": {
     "dotenv": "^17.4.2",
-    "mapshaper": "^0.6.113",
+    "mapshaper": "^0.6.13",
     "typescript": "~6.0.2",
     "vite": "^8.1.1"
+  },
+  "dependencies": {
+    "@panzoom/panzoom": "^4.6.2"
   }
 }

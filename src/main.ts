@@ -1,5 +1,6 @@
 import './style.css'
 import countyMap from '../data/svg/map.svg?raw'
+import { setupZoom } from './map'
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 
@@ -9,3 +10,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 
 <div id="spacer"></div>
 `
+
+// Use panzoom
+const map = document.querySelector<SVGElement>('#map')!
+setupZoom(map)
