@@ -31,12 +31,18 @@
 }
 
 @media (prefers-color-scheme: light) {
+  #map-canvas,
+  #map
+  {
+    background: #8df;
+  }
+
   #highways {
     stroke-color: #0ff;
   }
 
   #counties {
-    fill: #bcc;
+    fill: rgb(220,220,220);
   }
 }
 
@@ -54,13 +60,20 @@
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
 
+  #map-canvas,
+  #map
+  {
+    background: #0000;
+  }
+
+
   #highways {
     stroke: #0ff;
     opacity: 0.2;
   }
 
   #counties {
-    opacity: 0.3
+    fill: rgb(220,220,220, 0.25);
   }
 }
 
@@ -129,10 +142,4 @@ p {
   @media (max-width: 1024px) {
     height: 48px;
   }
-}
-
-#map-canvas,
-#map
-{
-  background: #0000;
 }

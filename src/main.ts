@@ -3,7 +3,6 @@ import countyMap from '../data/svg/map.svg?raw'
 import { setupZoom } from './map'
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-
 <section id="map-canvas">
   ${countyMap}
 </section>
