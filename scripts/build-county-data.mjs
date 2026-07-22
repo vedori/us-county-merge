@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import fs from 'node:fs';
-// import data from './config.json' with { type: 'json' };
-import { GDP_COMBINATION_AREAS } from '../data/constants.mjs';
+
+import GDP_COMBINATION_AREAS from '../data/grouped-counties.json' with { type: 'json'};
 
 const CENSUS_API_URI = 'https://api.census.gov/data/2020/dec/pl';
 const BEA_API_URI = 'https://apps.bea.gov/api/data';
