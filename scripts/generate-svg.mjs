@@ -38,7 +38,8 @@ const NEW_FIELD_MAPPING = {
 const buildCountyCommand = () => {
 
   // Imports required fields from the KML file
-  const importFields = ' ' + 'string-fields="GEOID","NAMELSAD","STUSPS"';
+  // const importFields = ' ' + 'string-fields="GEOID","NAMELSAD","STUSPS"';
+  const importFields = ' ' + 'string-fields=*';
 
   // Defines the desired projection
   const applyProjection = ' ' + '-proj albersusa';
