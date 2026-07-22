@@ -3,11 +3,9 @@
   --text-h: #08060d;
   --bg: #fff;
   --border: #e5e4e7;
-  --code-bg: #f4f3ec;
   --accent: #aa3bff;
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
@@ -15,8 +13,8 @@
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
+  font: 1.125rem/145% var(--sans);
+  letter-spacing: 0.01em;
   color-scheme: light dark;
   color: var(--text);
   background: var(--bg);
@@ -26,7 +24,7 @@
   -moz-osx-font-smoothing: grayscale;
 
   @media (max-width: 1024px) {
-    font-size: 16px;
+    font-size: 1rem;
   }
 }
 
@@ -52,7 +50,6 @@
     --text-h: #f3f4f6;
     --bg: #16171d;
     --border: #2e303a;
-    --code-bg: #1f2028;
     --accent: #c084fc;
     --accent-bg: rgba(192, 132, 252, 0.15);
     --accent-border: rgba(192, 132, 252, 0.5);
@@ -89,29 +86,31 @@ h2 {
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
+  font-size: 3.5rem;
+  letter-spacing: -0.1rem;
   line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
+  margin: 2rem 0;
   @media (max-width: 1024px) {
-    font-size: 20px;
+    font-size: 2.25rem;
+    margin: 1.25rem 0;
   }
 }
+
+h2 {
+  font-size: 1.5rem;
+  line-height: 118%;
+  letter-spacing: -0.015rem;
+  margin: 0 0 0.5rem;
+  @media (max-width: 1024px) {
+    font-size: 1.25rem;
+  }
+}
+
 p {
   margin: 0;
 }
 
 #app {
-  width: 1126px;
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
@@ -122,24 +121,15 @@ p {
   box-sizing: border-box;
 }
 
-#center {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
+.spacer {
+  border-top: 1px solid var(--border);
+  margin: 1rem 0;
 }
 
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
+#hero {
+}
+
+#map {
+  height: 60svh;
+  width: 100%;
 }
