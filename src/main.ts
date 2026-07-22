@@ -1,7 +1,7 @@
 import './style.css'
 import hero from './sections/hero.html?raw'
 import countyMap from '../data/svg/map.svg?raw'
-import { setupZoom } from './map'
+import { setupZoom } from './zoom'
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 ${hero}
