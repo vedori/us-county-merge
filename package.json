@@ -20,20 +20,29 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "build-county-data": "node ./scripts/build-county-data.mjs",
-    "build-highway-data": "node ./scripts/build-highway-data.mjs",
-    "build-map": "node ./scripts/generate-svg.mjs",
-    "preview": "vite preview",
-    "preview-map": "node --watch ./scripts/generate-svg.mjs"
+    "build": "tsc --project tsconfig.json && vite build",
+    "build:data": "tsx --tsconfig ./scripts/tsconfig.json ./scripts/build-county-data.ts && tsx --tsconfig ./scripts/tsconfig.json ./scripts/build-highway-data.ts && tsx --tsconfig ./scripts/tsconfig.json ./scripts/generate-svg.ts",
+    "build:county-data": "tsx --tsconfig ./scripts/tsconfig.json ./scripts/build-county-data.ts",
+    "build:highway-data": "tsx --tsconfig ./scripts/tsconfig.json ./scripts/build-highway-data.ts",
+    "build:map": "tsx --tsconfig ./scripts/tsconfig.json ./scripts/generate-svg.ts",
+    "preview:map": "tsx --tsconfig ./scripts/tsconfig.json --watch ./scripts/generate-svg.ts",
+    "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/node": "^26.1.1",
     "dotenv": "^17.4.2",
+    "eslint-import-resolver-typescript": "^4.4.5",
     "mapshaper": "^0.6.13",
+    "tsx": "^4.23.1",
     "typescript": "~6.0.2",
     "vite": "^8.1.1"
   },
   "dependencies": {
     "@panzoom/panzoom": "^4.6.2"
+  },
+  "allowScripts": {
+    "better-sqlite3@12.11.1": true,
+    "esbuild@0.28.1": true,
+    "msgpackr-extract@3.0.4": true
   }
 }

@@ -1,0 +1,28 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "outDir": "dist/scripts",
+    "lib": ["ES2023", "DOM"],
+    "types": ["node"],
+
+    /* Define Paths */
+    "baseUrl": "./",
+    "rootDir": "..",
+    "paths": {
+      "@features/*": ["features/*"],
+      "@utils/*": ["utils/*"],
+      "@shared/*": ["../shared/*"],
+      "@data/*": ["../data/*"]
+    },
+
+    /* No Bundling */
+    "moduleResolution": "nodenext",
+    "importsNotUsedAsValues": "remove",
+    "noEmit": false,
+
+    /* Linting */
+    "erasableSyntaxOnly": false
+  },
+  "include": ["./**/*", "../shared/**/*"]
+}
