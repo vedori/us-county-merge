@@ -7,6 +7,13 @@
     "allowArbitraryExtensions": true,
     "skipLibCheck": true,
 
+    /* Define Paths */
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["shared/*"],
+      "@data/*": ["data/*"]
+    },
+
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -18,7 +25,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
+    "strictPropertyInitialization": true,
+    "strictNullChecks": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src", "shared/**/*"]
 }
