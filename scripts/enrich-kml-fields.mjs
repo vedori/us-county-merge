@@ -9,17 +9,20 @@ const getPop = (geoId) => {
   if (county) {
     return county.pop;
   }
-}
+};
 
 // If in a combination area the gdp will be represented as g:groupId
 const getGDP = (geoId) => {
   const county = countyData[geoId];
-  if (county && county.gdp) {
+  if (!county) {
+    return;
+  }
+  if (county.gdp) {
     return county.gdp;
-  } else if (county && county.gdpGroupId) {
+  }
+  if (county.gdpGroupId) {
     return `g:${county.gdpGroupId}`;
   }
 };
-
 
 export { getPop, getGDP }

@@ -1,5 +1,7 @@
-// Cleans the svg data so it can work as expected
-const clean = (svg_data) => {
+/**
+ * Reformats the svg data so it can work as expected
+ */
+const reformatSvg = (svg_data) => {
   let data = svg_data;
 
   // Removes the svg version comment
@@ -61,4 +63,4 @@ const clean = (svg_data) => {
   return data;
 }
 
-export { clean }
+export { reformatSvg };

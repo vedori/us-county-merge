@@ -21,11 +21,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --project tsconfig.json && vite build",
-    "build:data": "tsx --tsconfig ./scripts/tsconfig.json ./scripts/build-county-data.ts && tsx --tsconfig ./scripts/tsconfig.json ./scripts/build-highway-data.ts && tsx --tsconfig ./scripts/tsconfig.json ./scripts/generate-svg.ts",
+    "build:data": "tsx --tsconfig ./scripts/tsconfig.json ./scripts/build-county-data.ts && tsx --tsconfig ./scripts/tsconfig.json ./scripts/build-highway-data.ts && tsx --tsconfig ./scripts/tsconfig.json ./scripts/generate-svg.mjs",
     "build:county-data": "tsx --tsconfig ./scripts/tsconfig.json ./scripts/build-county-data.ts",
     "build:highway-data": "tsx --tsconfig ./scripts/tsconfig.json ./scripts/build-highway-data.ts",
-    "build:map": "tsx --tsconfig ./scripts/tsconfig.json ./scripts/generate-svg.ts",
-    "preview:map": "tsx --tsconfig ./scripts/tsconfig.json --watch ./scripts/generate-svg.ts",
+    "build:map": "tsx --tsconfig ./scripts/tsconfig.json ./scripts/generate-svg.mjs",
+    "preview:map": "tsx --tsconfig ./scripts/tsconfig.json --watch ./scripts/generate-svg.mjs",
     "preview": "vite preview"
   },
   "devDependencies": {

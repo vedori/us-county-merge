@@ -1,6 +1,7 @@
 import mapshaper from 'mapshaper';
 import fs from 'node:fs';
-import { clean } from './clean-svg-data.mjs';
+import { reformatSvg } from './reformat-svg.mjs';
+
 
 // Simplifies the output SVG
 // Higher values keep more vertices 
@@ -99,6 +100,7 @@ const buildCountyCommand = () => {
 // Builds the command for taking in the highway file 
 // and transforming it into a kml file projected in albers usa
 const buildHighwayCommand = () => {
+  const SVG_SIMPLIFICATION_PERCENTAGE = '0%';
   const applyProjection = ' -proj albersusa';
   const mergePolylineByInterstate = ' -dissolve fields="SIGN1"';
   const styleLines = ' -style clear';
@@ -192,11 +194,11 @@ const svgOutput = await mapshaper.applyCommands(svgCmd, { ...countyProjected, ..
 
 // Fixes formatting issues in the generated SVG XML
 // and applies additional styling to certain elements
-console.log('Cleaning SVG data');
-const cleanSvgOutput = clean(svgOutput[SVG_OUTPUT_FILE]);
+console.log('Reformatting SVG data');
+const output = reformatSvg(svgOutput[SVG_OUTPUT_FILE]);
 
 // Writes the SVG data to a file
-fs.writeFile(SVG_OUTPUT_FILE, cleanSvgOutput, (err) => {
+fs.writeFile(SVG_OUTPUT_FILE, output, (err) => {
   if (err) {
     console.error('Error writing to SVG file:', err);
     return;
