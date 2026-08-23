@@ -31,6 +31,8 @@ const ARCGIS_METADATA_URL: string = 'https://services.arcgis.com/xOi1kZaI0eWDREZ
 async function batchFeatures(batchProps: HighwayApiBatchProps): Promise<HighwayFeature[]> {
   const totalFeatures: HighwayFeature[] = []
   let offset = 0;
+  let timeoutMs = 6000;
+  let previousUrl: string = '';
 
   console.log("Starting fetch for all Interstate highways ");
   while (true) {
@@ -54,11 +56,11 @@ async function batchFeatures(batchProps: HighwayApiBatchProps): Promise<HighwayF
     const response: HighwayApiResponse = fetchedData.result;
     const features: HighwayFeature[] = response.features || [];
 
-    // If the fetch gives a 429 Too Many Requests status pause for 1 minute and try again
-    if (fetchedData.status == 429) {
-      const ms = 60000;
-      console.log(`Too many requests. Will wait for ${ms / 1000}s`);
-      await sleep(60000);
+    // If the fetch is not 200 or 304 wait before sending next query
+    if (fetchedData.status !== 200 && fetchedData.status !== 304) {
+      timeoutMs = (previousUrl === url) ? timeoutMs * 2 : 6000;
+      console.log(`Too many requests. Will wait for ${timeoutMs / 1000}s`);
+      await sleep(timeoutMs);
       continue;
     }
 
@@ -68,7 +70,6 @@ async function batchFeatures(batchProps: HighwayApiBatchProps): Promise<HighwayF
     }
 
     totalFeatures.push(...features);
-    console.log(`HTTP Status: ${fetchedData.status}`);
     console.log(`Retrieved ${features.length} features. Total so far: ${totalFeatures.length}`);
 
     // The response has an optional flag that indicates that the final features has NOT been fetched
@@ -78,6 +79,9 @@ async function batchFeatures(batchProps: HighwayApiBatchProps): Promise<HighwayF
 
       // Adds a delay after each server response
       await sleep(batchProps.timeMsPerBatch);
+
+      // Used to check if it is querying the same data due to a server error / timeout
+      previousUrl = url;
     } else {
       break;
     }
