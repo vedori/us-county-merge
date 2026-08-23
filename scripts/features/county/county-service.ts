@@ -7,7 +7,10 @@ import { fetchGdpData } from "@features/economics/index.ts";
 // Class that contains all the relevant entry statistics
 import { County } from '@features/county/county-model.ts';
 
-// Used to store all the counties
+/**
+ * Provides a centralized, singleton service layer for fetching, caching, and accessing all
+ * county-level statistics.
+ */
 export class CountyService {
 
   /** Singleton instance */
@@ -15,7 +18,7 @@ export class CountyService {
 
   /**
    * Represents the single source of truth for all county data
-   * It is a data store map where the key is the county geoID
+   * It is a data store map where the key is the county GEOID
    * and the value an instance of a County
    */
   countyStore: Map<string, County>;
@@ -24,6 +27,10 @@ export class CountyService {
     this.countyStore = new Map<string, County>();
   }
 
+  /**
+   * Returns the single instance of the CountyService ensuring that
+   * only one instance of CountyService exists throughout the application
+   */
   public static getInstance(): CountyService {
     if (!CountyService.instance) {
       CountyService.instance = new CountyService();
@@ -31,12 +38,10 @@ export class CountyService {
     return CountyService.instance;
   }
 
+  /**
+   * Fetches all required county data to an object containing all county data.
+   */
   public async getAllCountyData() {
-    // If the data store is already populated return it
-    if (this.countyStore.size > 0) {
-      return this.toJSON()
-    }
-
     const [population, gdp] = await Promise.all([
       fetchPopulationData(),
       fetchGdpData()
@@ -45,7 +50,8 @@ export class CountyService {
     // Initialize all counties with their respective population entries
     population.map(populationEntry => {
       const county = new County(populationEntry);
-      const gdpEntry = gdp.gdp_entries.get(county.geoId)
+
+      const gdpEntry = gdp.gdp_entries.get(county.geoId);
       const gdpGroupedEntry = gdp.grouped_gdp_entries.get(county.geoId);
 
       // Adds a regular GDP entry if there is an entry with the county's geoId
@@ -61,7 +67,9 @@ export class CountyService {
     return this.toJSON();
   }
 
-  // The county store will be the representation of this class when emitting it as JSON
+  /**
+   * Converts the internal Map into a serializable JavaScript object.
+   */
   public toJSON(): object {
     return Object.fromEntries(this.countyStore);
   }

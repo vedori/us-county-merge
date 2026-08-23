@@ -1,7 +1,7 @@
-import type { GdpGroupConfig, GdpGroupConfigEntry } from "./gdp-group-config-types";
+import type { GdpGroupConfig } from "./gdp-group-config-types";
 import rawGdpGroupData from '@data/gdp-grouped-counties.json';
 
-export type { GdpGroupConfig, GdpGroupConfigEntry }
+export type { GdpGroupConfigEntry } from "./gdp-group-config-types.ts";
 
 /**
  * Defines the immutable structure representing the collective GDP of the individual counties

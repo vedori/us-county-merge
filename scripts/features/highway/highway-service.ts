@@ -3,13 +3,21 @@ import type { HighwayGeoJson, HighwayFeature, HighwayApiResponse, HighwayMetadat
 import { sleep } from "@utils/sleep.ts";
 
 // Uses the ArcGIS API
+
+/**
+ * The base URL for quering the NTAD National Highway System dataset from the ARCGIS API
+ * @type {string}
+ */
 // See: https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer/
 //      https://services.arcgis.com/xOi1kZaI0eWDREZv/ArcGIS/rest/services/NTAD_National_Highway_System/FeatureServer
-const ARCGIS_API_URL = 'https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTAD_National_Network/FeatureServer/0/query';
+const ARCGIS_API_URL: string = 'https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTAD_National_Network/FeatureServer/0/query';
 
-// The URL to get metadata about the feature
+/**
+ * The URL for getting the metadata of the NTAD National Network
+ * @type {string}
+ */
 // See: https://developers.arcgis.com/rest/services-reference/enterprise/feature-service/
-const ARCGIS_METADATA_URL = 'https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTAD_National_Network/FeatureServer/0?f=json';
+const ARCGIS_METADATA_URL: string = 'https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/NTAD_National_Network/FeatureServer/0?f=json';
 
 
 /**

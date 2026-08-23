@@ -25,8 +25,8 @@ export const fetchData = async (url: string): Promise<any> => {
  * Fetches JSON data from the specified URL and returns it alongside the HTTP status code.
  *
  * @param {string} url - The target URL to fetch data from.
- * @returns {Promise<FetchResponseWithStatus>} Resolves to an object containing the parsed response and status code.
- * On failure, returns the error object in `result` and its status code.
+ * @returns {Promise<FetchResponseWithStatus>} - Resolves to an object containing the parsed response and status code.
+ *                                               On failure, returns the error object in `result` and its status code.
  */
 export const fetchDataAndStatus = async (url: string): Promise<FetchResponseWithStatus> => {
   try {

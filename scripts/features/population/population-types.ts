@@ -1,23 +1,21 @@
 import type { Entry } from "utils/types/entry.ts";
 
 /**
- * Represents a population entry for a config
+ * Represents a structured data entry containing population metrics for a specific county.
+ * Extends standard county data entry and adds the total population count.
+ *
+ * @property {number} population - The total population count for the county.
  */
 export interface PopulationEntry extends Entry {
   population: number;
 }
 
 /**
- * The Census API's represents each county as an array
- * The first element represents the population
- * The second element represents the state FIPS code
- * The second element represents the county FIPS code
- * For example
- *  ["58805", "01", "001"],
+ * Represents the raw data structure returned by the Census API for a single county.
+ * This is a fixed-length tuple of three strings.
+ *
+ * @template [0] The population of the county.
+ * @template [1] The state FIPS Code
+ * @template [2] The county FIPS Code
  */
 export type CensusRawResponse = [string, string, string];
-// export interface PopulationData {
-//   population: number;
-//   stateId: string;
-//   countyId: string;
-// }
