@@ -47,7 +47,7 @@ async function batchFeatures(batchProps: HighwayApiBatchProps): Promise<HighwayF
       + "&outSR=4326" // The output spatial reference is epsg:4326
       + `&resultRecordCount=${batchProps.numberPerBatch.toString()}`
       + `&resultOffset=${offset.toString()}`
-      // + `&geometryPrecision=${batchProps.decimalPrecision}`
+      + `&geometryPrecision=${batchProps.decimalPrecision}`
       + '&f=geojson'
       ;
 
@@ -107,7 +107,7 @@ export async function getHighwayData(): Promise<HighwayGeoJson> {
     numberPerBatch: apiMetadata.maxRecordCount,
     timeMsPerBatch: 6000,
     offset: 0,
-    decimalPrecision: 4
+    decimalPrecision: 2
   };
 
   const totalFeatures = await batchFeatures(batchProps);

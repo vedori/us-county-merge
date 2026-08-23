@@ -84,13 +84,13 @@ export interface HighwayMetadataApi {
  * @property {number} numberPerBatch - Maximum features to request per API call (typically matches `maxRecordCount`).
  * @property {number} timeMsPerBatch - Delay in milliseconds between batch requests to respect ArcGIS rate limits.
  * @property {number} offset - Current pagination offset used during sequential fetching.
- * @property {number | undefined} decimalPrecision - Optional precision for geometry coordinates.
- *                                                   Currently reserved for future payload optimization.
+ * @property {number} decimalPrecision - Precision for geometry coordinates.
+ *                                       Defines how many places the decimals have.
  */
 export interface HighwayApiBatchProps {
   baseUrl: string;
   numberPerBatch: number;
   timeMsPerBatch: number;
   offset: number;
-  decimalPrecision?: number; // TODO: implement to see if cutting precision affects map quality
+  decimalPrecision: number;
 }

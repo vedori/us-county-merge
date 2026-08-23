@@ -153,6 +153,7 @@ const buildStateBordersCommand = () => {
     + `${STATE_BORDER_DATA_LABEL}`;
   return stateBorderKmlCmd;
 };
+
 // console.log('[Debug]: You should only see this message if you uncommented this code');
 // console.log(`Writing to ./${COUNTY_DATA_LABEL} and ./${HIGHWAY_DATA_LABEL}`);
 // await mapshaper.runCommands(buildCountyCommand());
