@@ -10,7 +10,6 @@
     "baseUrl": "./",
     "rootDir": "..",
     "paths": {
-      "@proj/*": ["./*"],
       "@features/*": ["features/*"],
       "@utils/*": ["utils/*"],
       "@shared/*": ["../shared/*"],
