@@ -10,6 +10,8 @@
     /* Define Paths */
     "baseUrl": ".",
     "paths": {
+      "@sections/*": ["src/sections/*"],
+      "@utils/*": ["src/utils/*"],
       "@shared/*": ["shared/*"],
       "@data/*": ["data/*"]
     },
@@ -29,5 +31,5 @@
     "strictNullChecks": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "shared/**/*", "data/**/*"]
+  "include": ["src/**/*", "shared/**/*"]
 }
